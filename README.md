@@ -56,7 +56,7 @@ There are no additional dependencies outside the Windows Api, which is present i
 
 ## Examples
 
-There are many examples present in the [Examples](https://github.com/DevChrome/Pixel-Engine/tree/master/Examples) folder, including Javidx9's and my own.
+There are many examples present in the [Examples](https://github.com/DevChrome/Pixel-Engine/tree/master/Examples) folder, including Javidx9's, [DevChrome's](https://github.com/DevChrome) and my own.
 
 ## Deployment
 
@@ -69,4 +69,6 @@ Build your projects with this as a reference and run the generated .exe file.
 
 ## Acknowledgments
 
-Check out the [olcPixelGameEngine](https://github.com/OneLoneCoder/olcPixelGameEngine) for C++ and its creator, [Javidx9](https://www.youtube.com/channel/UC-yuWVUplUJZvieEligKBkA), his website [OneLoneCoder](https://onelonecoder.com/), and the [OLC-3 License](https://github.com/DevChrome/Pixel-Engine/blob/master/Licences.txt) in the original project.
+Pixel-Engine was originally developed by [DevChrome](https://github.com/DevChrome) based on [olcPixelGameEngine](https://github.com/OneLoneCoder/olcPixelGameEngine).
+
+Check out the [olcPixelGameEngine](https://github.com/OneLoneCoder/olcPixelGameEngine) for C++ and its creator, [Javidx9](https://www.youtube.com/channel/UC-yuWVUplUJZvieEligKBkA), his website [OneLoneCoder](https://onelonecoder.com/), and the [OLC-3 License](https://github.com/coraxcorvidae/Pixel-Engine/blob/master/Licences.txt) in the original project.

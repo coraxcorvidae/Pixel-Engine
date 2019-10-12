@@ -114,14 +114,18 @@ namespace PixelEngine
 		private readonly Input[] mouse = new Input[3];
 		private readonly bool[] newMouse = new bool[3];
 		private readonly bool[] oldMouse = new bool[3];
+
+        private bool enableFullScreen;
         #endregion
 
-		#region Working
-		public void Start()
+        #region Working
+        public void Start()
 		{
 			RegisterClass();
 			CreateWindow();
-			active = true;
+            if (enableFullScreen)
+                EnableFullScreen();
+            active = true;
 
 			gameLoop = new Thread(GameLoop);
 			gameLoop.Start();
@@ -1068,36 +1072,13 @@ namespace PixelEngine
 		{
 			switch (subsystem)
 			{
-				case Subsystem.Fullscreen:
-					MonitorInfo mi = new MonitorInfo();
-					mi.Size = Marshal.SizeOf(mi);
+                case Subsystem.Fullscreen:
+                    enableFullScreen = true;
+                    if (Handle != IntPtr.Zero)
+                        EnableFullScreen();
+                    break;
 
-					if (GetMonitorInfo(MonitorFromWindow(Handle, MonitorDefaultNearest), ref mi))
-					{
-						int style = GetWindowLong(Handle, (int)WindowLongs.STYLE);
-
-						SetWindowLong(Handle, (int)WindowLongs.STYLE, style & ~(int)WindowStyles.OverlappedWindow);
-
-						SetWindowPos(Handle, WindowTop,
-									 mi.Monitor.Left, mi.Monitor.Top,
-									 mi.Monitor.Right - mi.Monitor.Left,
-									 mi.Monitor.Bottom - mi.Monitor.Top,
-									 (uint)(SWP.NoOwnerZOrder | SWP.FrameChanged));
-					}
-
-					GetClientRect(Handle, out Rect r);
-					ClientRect = r;
-
-					windowWidth = r.Right - r.Left;
-					windowHeight = r.Bottom - r.Top;
-
-					ScreenWidth = windowWidth / PixWidth;
-					ScreenHeight = windowHeight / PixHeight;
-
-					HandleDrawTarget();
-					break;
-
-				case Subsystem.Audio:
+                case Subsystem.Audio:
 					if (audio == null)
 					{
 						audio = new AudioEngine()
@@ -1115,6 +1096,36 @@ namespace PixelEngine
 					break;
 			}
 		}
+
+        private void EnableFullScreen()
+        {
+            MonitorInfo mi = new MonitorInfo();
+            mi.Size = Marshal.SizeOf(mi);
+
+            if (GetMonitorInfo(MonitorFromWindow(Handle, MonitorDefaultNearest), ref mi))
+            {
+                int style = GetWindowLong(Handle, (int)WindowLongs.STYLE);
+
+                SetWindowLong(Handle, (int)WindowLongs.STYLE, style & ~(int)WindowStyles.OverlappedWindow);
+
+                SetWindowPos(Handle, WindowTop,
+                    mi.Monitor.Left, mi.Monitor.Top,
+                    mi.Monitor.Right - mi.Monitor.Left,
+                    mi.Monitor.Bottom - mi.Monitor.Top,
+                    (uint)(SWP.NoOwnerZOrder | SWP.FrameChanged));
+            }
+
+            GetClientRect(Handle, out Rect r);
+            ClientRect = r;
+
+            windowWidth = r.Right - r.Left;
+            windowHeight = r.Bottom - r.Top;
+
+            ScreenWidth = windowWidth / PixWidth;
+            ScreenHeight = windowHeight / PixHeight;
+
+            HandleDrawTarget();
+        }
 
         #region Text
         public void DrawText(int x, int y, string text, Pixel col, int scale = 1)

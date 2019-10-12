@@ -7,187 +7,141 @@ using System.Threading.Tasks;
 
 namespace PixelEngine
 {
-	public class Font
-	{
-		internal Dictionary<char, Sprite> Glyphs;
-		internal int CharHeight;
+    public class Font
+    {
+        internal Dictionary<char, Sprite> Glyphs;
+        internal int CharHeight;
 
-		private Font() => Glyphs = new Dictionary<char, Sprite>();
+        private Font() => Glyphs = new Dictionary<char, Sprite>();
 
-		internal Font(Dictionary<char, Sprite> glyphs)
-		{
-			Glyphs = glyphs;
-			CharHeight = glyphs.Values.Max(g => g.Height);
-		}
-		
-		public int TextWidth(string text) => text.Sum(c => Glyphs[c].Width);
-		public int TextHeight(string text) => (text.Count(c => c == '\n') + 1) * CharHeight;
+        internal Font(Dictionary<char, Sprite> glyphs)
+        {
+            Glyphs = glyphs;
+            CharHeight = glyphs.Values.Max(g => g.Height);
+        }
 
-		static Font()
-		{
-			ResxHelper.LoadFonts();
-			retro = new Lazy<Font>(CreateRetro);
-			modern = new Lazy<Font>(CreateModern);
-			formal = new Lazy<Font>(CreateFormal);
-			handwritten = new Lazy<Font>(CreateHandwritten);
-		}
+        public int TextWidth(string text) => text.Sum(c => Glyphs[c].Width);
+        public int TextHeight(string text) => (text.Count(c => c == '\n') + 1) * CharHeight;
 
-		#region Presets
-		private static Font CreateRetro()
-		{
-			Font f = new Font();
-			f.CharHeight = 8;
+        static Font()
+        {
+            ResxHelper.LoadFonts();
+            retro = new Lazy<Font>(CreateRetro);
+            modern = new Lazy<Font>(CreateModern);
+            formal = new Lazy<Font>(CreateFormal);
+            handwritten = new Lazy<Font>(CreateHandwritten);
+        }
 
-			Sprite spr = Sprite.Load(Windows.TempPath + "\\Retro.png");
+        private static Font LoadFont(int width, int height, string path)
+        {
+            Font f = new Font();
+            f.CharHeight = height;
 
-			for (char cur = ' '; cur < 128; cur++)
-			{
-				Sprite fontChar = new Sprite(8, 8);
+            Sprite spr = Sprite.Load(path);
 
-				int x = (cur - 32) % 16;
-				int y = (cur - 32) / 16;
+            for (char cur = ' '; cur < 128; cur++)
+            {
+                Sprite fontChar = new Sprite(width, height);
 
-				for (int i = 0; i < 8; i++)
-					for (int j = 0; j < 8; j++)
-						fontChar[i, j] = spr[x * 8 + i, y * 8 + j];
+                int x = (cur - 32) % 16;
+                int y = (cur - 32) / 16;
 
-				f.Glyphs.Add(cur, fontChar);
-			}
+                for (int i = 0; i < width; i++)
+                for (int j = 0; j < height; j++)
+                    fontChar[i, j] = spr[x * width + i, y * height + j];
 
-			return f;
-		}
+                f.Glyphs.Add(cur, fontChar);
+            }
 
-		private static Font CreateModern()
-		{
-			Font f = new Font();
-			f.CharHeight = 21;
+            return f;
+        }
 
-			Sprite spr = Sprite.Load(Windows.TempPath + "\\Modern.png");
+        private static Font LoadFont(int width, int height, string path, string dataPath)
+        {
+            Font f = new Font();
+            f.CharHeight = height;
 
-			using (FileStream stream = File.OpenRead(Windows.TempPath + "\\Modern.dat"))
-			using (BinaryReader reader = new BinaryReader(stream))
-			{
-				reader.ReadBytes(16); // Offset 16 + 32
-				reader.ReadBytes(33); // bytes into data
+            Sprite spr = Sprite.Load(path);
 
-				byte[] widths = reader.ReadBytes(96); // widths of 96 ascii chars
+            using (FileStream stream = File.OpenRead(dataPath))
+            using (BinaryReader reader = new BinaryReader(stream))
+            {
+                reader.ReadBytes(16); // Offset 16 + 32
+                reader.ReadBytes(33); // bytes into data
 
-				for (char cur = ' '; cur < 128; cur++)
-				{
-					byte w = widths[cur - 32];
-					Sprite fontChar = new Sprite(w, 21);
+                byte[] widths = reader.ReadBytes(96); // widths of 96 ascii chars
 
-					int x = (cur - 32) % 16;
-					int y = (cur - 32) / 16;
+                for (char cur = ' '; cur < 128; cur++)
+                {
+                    byte w = widths[cur - 32];
+                    Sprite fontChar = new Sprite(w, height);
 
-					for (int i = 0; i < w; i++)
-						for (int j = 0; j < 21; j++)
-							fontChar[i, j] = spr[x * 16 + i, y * 21 + j];
+                    int x = (cur - 32) % 16;
+                    int y = (cur - 32) / 16;
 
-					f.Glyphs.Add(cur, fontChar);
-				}
-			}
+                    for (int i = 0; i < w; i++)
+                    for (int j = 0; j < height; j++)
+                        fontChar[i, j] = spr[x * width + i, y * height + j];
 
-			return f;
-		}
+                    f.Glyphs.Add(cur, fontChar);
+                }
+            }
 
-		private static Font CreateFormal()
-		{
-			Font f = new Font();
-			f.CharHeight = 21;
+            return f;
+        }
 
-			Sprite spr = Sprite.Load(Windows.TempPath + "\\Formal.png");
+        #region Presets
 
-			using (FileStream stream = File.OpenRead(Windows.TempPath + "\\Formal.dat"))
-			using (BinaryReader reader = new BinaryReader(stream))
-			{
-				reader.ReadBytes(16); // Offset 16 + 32
-				reader.ReadBytes(33); // bytes into data
+        private static Font CreateRetro()
+        {
+            return LoadFont(8, 8, Windows.TempPath + "\\Retro.png");
+        }
 
-				byte[] widths = reader.ReadBytes(96); // widths of 96 ascii chars
+        private static Font CreateModern()
+        {
+            return LoadFont(16, 21, Windows.TempPath + "\\Modern.png", Windows.TempPath + "\\Modern.dat");
+        }
 
-				for (char cur = ' '; cur < 128; cur++)
-				{
-					byte w = widths[cur - 32];
-					Sprite fontChar = new Sprite(w, 21);
+        private static Font CreateFormal()
+        {
+            return LoadFont(16, 21, Windows.TempPath + "\\Formal.png", Windows.TempPath + "\\Formal.dat");
+        }
 
-					int x = (cur - 32) % 16;
-					int y = (cur - 32) / 16;
+        private static Font CreateHandwritten()
+        {
+            return LoadFont(16, 21, Windows.TempPath + "\\Handwritten.png", Windows.TempPath + "\\Handwritten.dat");
+        }
 
-					for (int i = 0; i < w; i++)
-						for (int j = 0; j < 21; j++)
-							fontChar[i, j] = spr[x * 16 + i, y * 21 + j];
+        private static readonly Lazy<Font> retro;
+        private static readonly Lazy<Font> modern;
+        private static readonly Lazy<Font> formal;
+        private static readonly Lazy<Font> handwritten;
 
-					f.Glyphs.Add(cur, fontChar);
-				}
-			}
+        public enum Presets
+        {
+            Retro,
+            Modern,
+            Formal,
+            Handwritten
+        }
 
-			return f;
-		}
+        public static implicit operator Font(Presets p)
+        {
+            switch (p)
+            {
+                case Presets.Retro:
+                    return retro.Value;
+                case Presets.Modern:
+                    return modern.Value;
+                case Presets.Formal:
+                    return formal.Value;
+                case Presets.Handwritten:
+                    return handwritten.Value;
+            }
 
-		private static Font CreateHandwritten()
-		{
-			Font f = new Font();
-			f.CharHeight = 21;
+            return null;
+        }
 
-			Sprite spr = Sprite.Load(Windows.TempPath + "\\Handwritten.png");
-
-			using (FileStream stream = File.OpenRead(Windows.TempPath + "\\Handwritten.dat"))
-			using (BinaryReader reader = new BinaryReader(stream))
-			{
-				reader.ReadBytes(16); // Offset 16 + 32
-				reader.ReadBytes(33); // bytes into data
-
-				byte[] widths = reader.ReadBytes(96); // widths of 96 ascii chars
-
-				for (char cur = ' '; cur < 128; cur++)
-				{
-					byte w = widths[cur - 32];
-					Sprite fontChar = new Sprite(w, 21);
-
-					int x = (cur - 32) % 16;
-					int y = (cur - 32) / 16;
-
-					for (int i = 0; i < w; i++)
-						for (int j = 0; j < 21; j++)
-							fontChar[i, j] = spr[x * 16 + i, y * 21 + j];
-
-					f.Glyphs.Add(cur, fontChar);
-				}
-			}
-
-			return f;
-		}
-
-		private static readonly Lazy<Font> retro;
-		private static readonly Lazy<Font> modern;
-		private static readonly Lazy<Font> formal;
-		private static readonly Lazy<Font> handwritten;
-
-		public enum Presets
-		{
-			Retro,
-			Modern,
-			Formal,
-			Handwritten
-		}
-
-		public static implicit operator Font(Presets p)
-		{
-			switch (p)
-			{
-				case Presets.Retro:
-					return retro.Value;
-				case Presets.Modern:
-					return modern.Value;
-				case Presets.Formal:
-					return formal.Value;
-				case Presets.Handwritten:
-					return handwritten.Value;
-			}
-
-			return null;
-		} 
-		#endregion
-	}
+        #endregion
+    }
 }

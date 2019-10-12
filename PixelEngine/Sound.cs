@@ -135,6 +135,8 @@ namespace PixelEngine
 
 		public bool Loop { get; set; }
 
+        public float Volume { get; set; } = 1.0f;
+
 		internal WaveFormatEx WavHeader;
 		internal short[] Samples = null;
 		internal long SampleCount = 0;
@@ -148,9 +150,10 @@ namespace PixelEngine
 		public long SamplePosition { get; set; }
 		public bool Finished { get; set; }
 		public bool Loop { get; set; }
-	}
+        public float Volume() => AudioSample.Volume / short.MaxValue;
+    }
 
-	internal class AudioEngine
+    internal class AudioEngine
 	{
 		public Func<int, float, float, float> OnSoundCreate { get; set; }
 		public Func<int, float, float, float> OnSoundFilter { get; set; }
@@ -159,7 +162,7 @@ namespace PixelEngine
 
 		public float GlobalTime { get; private set; }
 
-		internal float Volume = 1;
+		public float MasterVolume = 1.0f;
 
 		private List<Sound> samples;
 		private List<PlayingSample> playingSamples;
@@ -211,8 +214,8 @@ namespace PixelEngine
 				AudioSample = s,
 				SamplePosition = 0,
 				Finished = false,
-				Loop = s.Loop
-			};
+				Loop = s.Loop,
+            };
 
 			playingSamples.Add(ps);
 		}
@@ -293,8 +296,6 @@ namespace PixelEngine
 
 		private float GetMixerOutput(int channel, float globalTime, float timeStep)
 		{
-			const float MaxValue = 1f / short.MaxValue;
-
 			float mixerSample = 0.0f;
 
 			if (playingSamples != null)
@@ -308,7 +309,7 @@ namespace PixelEngine
 
 					if (ps.SamplePosition < ps.AudioSample.SampleCount)
 					{
-						mixerSample += ps.AudioSample.Samples[(ps.SamplePosition * ps.AudioSample.Channels) + channel] * MaxValue;
+						mixerSample += ps.AudioSample.Samples[(ps.SamplePosition * ps.AudioSample.Channels) + channel] * ps.Volume() * MasterVolume;
 					}
 					else
 					{
@@ -325,7 +326,7 @@ namespace PixelEngine
 
 			mixerSample += OnSoundCreate(channel, globalTime, timeStep);
 			mixerSample = OnSoundFilter(channel, globalTime, mixerSample);
-			mixerSample *= Volume;
+			mixerSample *= MasterVolume;
 
 			return mixerSample;
 		}

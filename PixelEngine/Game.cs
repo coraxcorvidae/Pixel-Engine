@@ -29,12 +29,12 @@ namespace PixelEngine
 		{
 			get
 			{
-				return audio != null ? audio.Volume : 0;
+				return audio != null ? audio.MasterVolume : 0;
 			}
 			set
 			{
 				if (audio != null)
-					audio.Volume = Constrain(value, 0, 1);
+					audio.MasterVolume = Constrain(value, 0, 1);
 			}
 		}
 		public float AudioTime
@@ -114,14 +114,13 @@ namespace PixelEngine
 		private readonly Input[] mouse = new Input[3];
 		private readonly bool[] newMouse = new bool[3];
 		private readonly bool[] oldMouse = new bool[3];
-		#endregion
+        #endregion
 
 		#region Working
 		public void Start()
 		{
 			RegisterClass();
 			CreateWindow();
-
 			active = true;
 
 			gameLoop = new Thread(GameLoop);
@@ -1299,7 +1298,14 @@ namespace PixelEngine
 			if (audio != null)
 				audio.StopSound(s);
 		}
-		#endregion
+
+        public float MasterVolume
+        {
+            get => audio.MasterVolume;
+            set => audio.MasterVolume = value;
+        }
+
+        #endregion
 		#endregion
 
 		#region Functionality

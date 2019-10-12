@@ -56,7 +56,7 @@ There are no additional dependencies outside the Windows Api, which is present i
 
 ## Examples
 
-There are many examples present in the [Examples](https://github.com/DevChrome/Pixel-Engine/tree/master/Examples) folder, including Javidx9's, [DevChrome's](https://github.com/DevChrome) and my own.
+There are many examples present in the [Examples](https://github.com/DevChrome/Pixel-Engine/tree/master/Examples) folder, including Javidx9's, DevChrome's and my own.
 
 ## Deployment
 

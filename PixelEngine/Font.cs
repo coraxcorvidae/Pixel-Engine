@@ -20,7 +20,14 @@ namespace PixelEngine
             CharHeight = glyphs.Values.Max(g => g.Height);
         }
 
-        public int TextWidth(string text) => text.Sum(c => Glyphs[c].Width);
+        public int TextWidth(char c) => Glyphs[c].Width;
+
+        public int TextWidth(string text) => text.Length > 1
+            ? text.Sum(c => Glyphs[c].Width)
+            : text.Length == 1
+                ? TextWidth(text[0])
+                : 0;
+
         public int TextHeight(string text) => (text.Count(c => c == '\n') + 1) * CharHeight;
 
         static Font()

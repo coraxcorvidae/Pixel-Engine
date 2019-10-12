@@ -1116,8 +1116,13 @@ namespace PixelEngine
 			}
 		}
 
-		#region Text
-		public void DrawText(Point p, string text, Pixel col, int scale = 1)
+        #region Text
+        public void DrawText(int x, int y, string text, Pixel col, int scale = 1)
+        {
+            DrawText(new Point(x, y), text, col, scale);
+        }
+
+        public void DrawText(Point p, string text, Pixel col, int scale = 1)
 		{
 			if (string.IsNullOrWhiteSpace(text))
 				return;

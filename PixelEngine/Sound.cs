@@ -308,8 +308,8 @@ namespace PixelEngine
 					ps.SamplePosition += (long)Math.Ceiling(increment);
 
 					if (ps.SamplePosition < ps.AudioSample.SampleCount)
-					{
-						mixerSample += ps.AudioSample.Samples[(ps.SamplePosition * ps.AudioSample.Channels) + channel] * ps.Volume() * MasterVolume;
+                    {
+                        mixerSample += ps.AudioSample.Samples[(ps.SamplePosition * ps.AudioSample.Channels) + channel] * ps.Volume();
 					}
 					else
 					{

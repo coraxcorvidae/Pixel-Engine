@@ -150,7 +150,6 @@ namespace PixelEngine
 		public long SamplePosition { get; set; }
 		public bool Finished { get; set; }
 		public bool Loop { get; set; }
-        public float Volume() => AudioSample.Volume / short.MaxValue;
     }
 
     internal class AudioEngine
@@ -294,46 +293,49 @@ namespace PixelEngine
 			blockFree++;
 		}
 
-		private float GetMixerOutput(int channel, float globalTime, float timeStep)
-		{
-			float mixerSample = 0.0f;
+        private float GetMixerOutput(int channel, float globalTime, float timeStep)
+        {
+            const float MaxValue = 1f / short.MaxValue;
 
-			if (playingSamples != null)
-			{
-				for (int i = 0; i < playingSamples.Count; i++)
-				{
-					PlayingSample ps = playingSamples[i];
+            float mixerSample = 0.0f;
 
-					float increment = ps.AudioSample.WavHeader.SamplesPerSec * timeStep;
-					ps.SamplePosition += (long)Math.Ceiling(increment);
+            if (playingSamples != null)
+            {
+                for (int i = 0; i < playingSamples.Count; i++)
+                {
+                    PlayingSample ps = playingSamples[i];
 
-					if (ps.SamplePosition < ps.AudioSample.SampleCount)
+                    float increment = ps.AudioSample.WavHeader.SamplesPerSec * timeStep;
+                    ps.SamplePosition += (long) Math.Ceiling(increment);
+
+                    if (ps.SamplePosition < ps.AudioSample.SampleCount)
                     {
-                        mixerSample += ps.AudioSample.Samples[(ps.SamplePosition * ps.AudioSample.Channels) + channel] * ps.Volume();
-					}
-					else
-					{
-						if (ps.Loop)
-							ps.SamplePosition = 0;
-						else
-							ps.Finished = true;
-					}
+                        mixerSample +=
+                            ps.AudioSample.Samples[(ps.SamplePosition * ps.AudioSample.Channels) + channel] * MaxValue * ps.AudioSample.Volume;
+                    }
+                    else
+                    {
+                        if (ps.Loop)
+                            ps.SamplePosition = 0;
+                        else
+                            ps.Finished = true;
+                    }
 
-					playingSamples[i] = ps;
-					playingSamples.RemoveAll(s => s.Finished);
-				}
-			}
+                    playingSamples[i] = ps;
+                    playingSamples.RemoveAll(s => s.Finished);
+                }
+            }
 
-			mixerSample += OnSoundCreate(channel, globalTime, timeStep);
-			mixerSample = OnSoundFilter(channel, globalTime, mixerSample);
-			mixerSample *= MasterVolume;
+            mixerSample += OnSoundCreate(channel, globalTime, timeStep);
+            mixerSample = OnSoundFilter(channel, globalTime, mixerSample);
+            mixerSample *= MasterVolume;
 
-			return mixerSample;
-		}
+            return mixerSample;
+        }
 
-		private void AudioThread()
-		{
-			float Clip(float sample, float max)
+        private void AudioThread()
+        {
+            float Clip(float sample, float max)
 			{
 				if (sample >= 0)
 					return Math.Min(sample, max);
@@ -351,7 +353,7 @@ namespace PixelEngine
 			while (Active)
 			{
 				if (blockFree == 0)
-					while (blockFree == 0)
+					while (blockFree == 0 && Active)
 						Thread.Sleep(SoundInterval);
 
 				blockFree--;

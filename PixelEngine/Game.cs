@@ -111,9 +111,9 @@ namespace PixelEngine
 		private readonly bool[] newKeyboard = new bool[256];
 		private readonly bool[] oldKeyboard = new bool[256];
 
-		private readonly Input[] mouse = new Input[3];
-		private readonly bool[] newMouse = new bool[3];
-		private readonly bool[] oldMouse = new bool[3];
+		private readonly Input[] mouse = new Input[5];
+		private readonly bool[] newMouse = new bool[5];
+		private readonly bool[] oldMouse = new bool[5];
 
         private bool enableFullScreen;
         #endregion
@@ -197,12 +197,12 @@ namespace PixelEngine
 					if (paused)
 						continue;
 
-					OnUpdate(elapsed);
+                    HandleKeyboard();
+                    HandleMouse();
 
-					HandleKeyboard();
-					HandleMouse();
+                    OnUpdate(elapsed);
 
-					FrameCount++;
+                    FrameCount++;
 
 					canvas.Draw(defDrawTarget, textTarget);
 				}
@@ -223,7 +223,7 @@ namespace PixelEngine
 		}
 		private void HandleMouse()
 		{
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < 5; i++)
 			{
 				mouse[i].Pressed = false;
 				mouse[i].Released = false;
@@ -300,9 +300,9 @@ namespace PixelEngine
 		}
 		private protected override IntPtr WndProc(IntPtr handle, uint msg, int wParam, int lParam)
 		{
-			switch (msg)
+            switch (msg)
 			{
-				case (uint)WM.SETFOCUS:
+                case (uint)WM.SETFOCUS:
 					Focus = true;
 					break;
 				case (uint)WM.KILLFOCUS:
@@ -351,7 +351,31 @@ namespace PixelEngine
 					newMouse[(int)Mouse.Middle] = false;
 					OnMouseRelease(Mouse.Middle);
 					break;
-				case (uint)WM.CLOSE:
+                case (uint) WM.XBUTTONDOWN:
+                    if ((uint) wParam == 131136)
+                    {
+                        newMouse[(int)Mouse.XButton1] = true;
+                        OnMousePress(Mouse.XButton1);
+                    }
+                    else if ((uint)wParam == 65568)
+                    {
+                        newMouse[(int)Mouse.XButton2] = true;
+                        OnMousePress(Mouse.XButton2);
+                    }
+                    break;
+                case (uint) WM.XBUTTONUP:
+                    if ((uint)wParam == 131072)
+                    {
+                        newMouse[(int)Mouse.XButton1] = false;
+                        OnMouseRelease(Mouse.XButton1);
+                    }
+                    else if ((uint)wParam == 65536)
+                    {
+                        newMouse[(int)Mouse.XButton2] = false;
+                        OnMouseRelease(Mouse.XButton2);
+                    }
+                    break;
+                case (uint)WM.CLOSE:
 					Finish();
 					break;
 				case (uint)WM.DESTROY:
@@ -383,7 +407,8 @@ namespace PixelEngine
 			return mouse[(int)m];
 		}
 
-		public void Delay(float time)
+
+        public void Delay(float time)
 		{
 			if (!delaying)
 				delaying = true;
@@ -504,8 +529,10 @@ namespace PixelEngine
 				newMouse[(int)Mouse.Left] = GetKeyState((int)VK.LBUTTON) < 0;
 				newMouse[(int)Mouse.Middle] = GetKeyState((int)VK.MBUTTON) < 0;
 				newMouse[(int)Mouse.Right] = GetKeyState((int)VK.RBUTTON) < 0;
-			
-				HandleMouse();
+                newMouse[(int)Mouse.XButton1] = GetKeyState((int)VK.XBUTTON1) < 0;
+                newMouse[(int)Mouse.XButton2] = GetKeyState((int)VK.XBUTTON2) < 0;
+
+                HandleMouse();
 			}
 		}
 		private protected override void CreateWindow()

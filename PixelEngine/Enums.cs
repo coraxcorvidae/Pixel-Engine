@@ -15,6 +15,8 @@
 		Left,
 		Middle,
 		Right,
+        XButton1,
+        XButton2,
 		Any,
 		None
 	}

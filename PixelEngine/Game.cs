@@ -171,13 +171,13 @@ namespace PixelEngine
 			{
 				while (active)
 				{
+					if (frameTimer != null && !frameTimer.Tick())
+						continue;
+					
 					t2 = DateTime.Now;
 					Clock.Elapsed = t2 - t1;
 					float elapsed = (float)Clock.Elapsed.TotalSeconds;
 					t1 = t2;
-
-					if (frameTimer != null && !frameTimer.Tick())
-						continue;
 
 					if (delaying)
 					{

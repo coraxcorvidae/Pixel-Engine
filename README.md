@@ -30,12 +30,12 @@ namespace Examples
 		{
 			// Create an instance
 			RandomPixels rp = new RandomPixels();
-      
+
       			// Construct the 100x100 game window with 5x5 pixels
-			rp.Construct(100, 100, 5, 5); 
-      
+			rp.Construct(100, 100, 5, 5);
+
       			// Start and show a window
-			rp.Start(); 
+			rp.Start();
 		}
 
 		// Called once per frame
@@ -56,7 +56,7 @@ There are no additional dependencies outside the Windows Api, which is present i
 
 ## Examples
 
-There are many examples present in the [Examples](https://github.com/DevChrome/Pixel-Engine/tree/master/Examples) folder, including Javidx9's, DevChrome's and my own.
+There are many examples present in the [Examples](https://github.com/coraxcorvidae/Pixel-Engine/tree/master/Examples) folder, including Javidx9's, DevChrome's and my own.
 
 ## Deployment
 

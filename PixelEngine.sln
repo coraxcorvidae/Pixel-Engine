@@ -1,11 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2035
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PixelEngine", "PixelEngine\PixelEngine.csproj", "{A93C282E-2854-490D-B50B-34BAAF030642}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PixGL", "PixGL\PixGL.vcxproj", "{9E74BA3F-68D4-4578-AA4A-E750A97A7DC9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{286A66DF-71A5-4F1F-9073-73C3FE0A203E}"
+	ProjectSection(SolutionItems) = preProject
+		Examples\Beeping.cs = Examples\Beeping.cs
+		Examples\ChaosGame.cs = Examples\ChaosGame.cs
+		Examples\Dodger.cs = Examples\Dodger.cs
+		Examples\GameOfLife.cs = Examples\GameOfLife.cs
+		Examples\Matrix.cs = Examples\Matrix.cs
+		Examples\Mazes.cs = Examples\Mazes.cs
+		Examples\PerlinNoise.cs = Examples\PerlinNoise.cs
+		Examples\RandomPixels.cs = Examples\RandomPixels.cs
+		Examples\Snake.cs = Examples\Snake.cs
+		Examples\Tron.cs = Examples\Tron.cs
+		Examples\WireWorld.cs = Examples\WireWorld.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

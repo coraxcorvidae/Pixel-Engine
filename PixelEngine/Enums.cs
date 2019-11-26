@@ -27,4 +27,11 @@
 		None = 0,
 		Down = 1
 	}
+    public enum MagicNumbers : uint
+    {
+        XButton1Down = 131136,
+        XButton2Down = 65568,
+        XButton1Up = 131072,
+        XButton2Up = 65536
+    }
 }

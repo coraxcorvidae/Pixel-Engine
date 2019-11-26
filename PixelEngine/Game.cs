@@ -6,15 +6,14 @@ using System.Threading;
 
 using PixelEngine.Extensions;
 using PixelEngine.Utilities;
-
 using static PixelEngine.Windows;
 
 namespace PixelEngine
 {
-	public abstract class Game : Display
+    public abstract class Game : Display
 	{
-		#region Members
-		public int MouseX { get; private set; }
+        #region Members
+        public int MouseX { get; private set; }
 		public int MouseY { get; private set; }
 		public Pixel.Mode PixelMode { get; set; } = Pixel.Mode.Normal;
 		public Font Font { get; set; }
@@ -25,7 +24,7 @@ namespace PixelEngine
 		public int FrameRate { get; private set; }
 		public Scroll MouseScroll { get; private set; }
 		public Clock Clock { get; private set; }
-		public float Volume
+        public float Volume
 		{
 			get
 			{
@@ -79,6 +78,7 @@ namespace PixelEngine
 		private float pixBlend = 1;
 
 		private Timer frameTimer;
+        private Timer contollerRefreshTimer;
 
 		private static WindowProcess proc;
 		private static TimerProcess timeProc;
@@ -116,6 +116,13 @@ namespace PixelEngine
 		private readonly bool[] oldMouse = new bool[5];
 
         private bool enableFullScreen;
+
+        /// <summary>
+        /// Game pad subsystem master switch.
+        /// </summary>
+        private bool gamePad;
+
+        public Controllers Controllers;
         #endregion
 
         #region Working
@@ -127,7 +134,7 @@ namespace PixelEngine
                 EnableFullScreen();
             active = true;
 
-			gameLoop = new Thread(GameLoop);
+            gameLoop = new Thread(GameLoop);
 			gameLoop.Start();
 
 			MessagePump();
@@ -142,7 +149,7 @@ namespace PixelEngine
 				frameTimer = new Timer(1000.0f / FrameRate);
 			}
 
-			Font = Font.Presets.Retro;
+            Font = Font.Presets.Retro;
 			HandleDrawTarget();
 		}
 		private void GameLoop()
@@ -199,6 +206,7 @@ namespace PixelEngine
 
                     HandleKeyboard();
                     HandleMouse();
+                    HandleControllers();
 
                     OnUpdate(elapsed);
 
@@ -293,7 +301,43 @@ namespace PixelEngine
 			noneKey.Down = !anyKey.Down;
 			noneKey.Released = !anyKey.Released;
 		}
-		private void HandleDrawTarget()
+
+        private int[] controllerPackets = new int[4] {-1, -1, -1, -1};
+
+        private void HandleControllers()
+        {
+            if (!gamePad || !Controllers.IsAvailable) return;
+            for (var i = 0; i < 4; i++)
+            {
+                if (Controllers[i].IsAvailable && Controllers[i].GetState(out var state) &&
+                    state.PacketNumber != controllerPackets[i])
+                {
+                    controllerPackets[i] = state.PacketNumber;
+                    OnController(i, state);
+                }
+            }
+
+            if (contollerRefreshTimer.Tick())
+            {
+                for (var i = 0; i < 4; i++)
+                {
+                    var pad = new Controller((GamePads) i);
+                    if (Controllers[i].IsConnected && !pad.IsConnected)
+                    {
+                        Controllers[i] = pad;
+                        OnControllerDisconnected(i, Controllers[i].State);
+                    }
+                    else if (!Controllers[i].IsConnected && pad.IsConnected)
+                    {
+                        Controllers[i] = pad;
+                        Controllers[i].GetState();
+                        OnControllerConnected(i, Controllers[i].State);
+                    }
+                }
+            }
+        }
+
+        private void HandleDrawTarget()
 		{
 			defDrawTarget = new Sprite(ScreenWidth, ScreenHeight);
 			DrawTarget = defDrawTarget;
@@ -352,24 +396,24 @@ namespace PixelEngine
 					OnMouseRelease(Mouse.Middle);
 					break;
                 case (uint) WM.XBUTTONDOWN:
-                    if ((uint) wParam == 131136)
+                    if ((uint) wParam == (uint)MagicNumbers.XButton1Down)
                     {
                         newMouse[(int)Mouse.XButton1] = true;
                         OnMousePress(Mouse.XButton1);
                     }
-                    else if ((uint)wParam == 65568)
+                    else if ((uint)wParam == (uint)MagicNumbers.XButton2Down)
                     {
                         newMouse[(int)Mouse.XButton2] = true;
                         OnMousePress(Mouse.XButton2);
                     }
                     break;
                 case (uint) WM.XBUTTONUP:
-                    if ((uint)wParam == 131072)
+                    if ((uint)wParam == (uint)MagicNumbers.XButton1Up)
                     {
                         newMouse[(int)Mouse.XButton1] = false;
                         OnMouseRelease(Mouse.XButton1);
                     }
-                    else if ((uint)wParam == 65536)
+                    else if ((uint)wParam == (uint)MagicNumbers.XButton2Up)
                     {
                         newMouse[(int)Mouse.XButton2] = false;
                         OnMouseRelease(Mouse.XButton2);
@@ -440,7 +484,7 @@ namespace PixelEngine
 		#region Math
 		public static readonly float PI = (float)Math.PI;
 
-		public float Sin(float val) => (float)Math.Sin(val);
+        public float Sin(float val) => (float)Math.Sin(val);
 		public float Cos(float val) => (float)Math.Cos(val);
 		public float Tan(float val) => (float)Math.Tan(val);
 
@@ -1093,7 +1137,8 @@ namespace PixelEngine
 		{
 			Fullscreen,
 			Audio,
-			HrText
+			HrText,
+            GamePad
 		}
 		public void Enable(Subsystem subsystem)
 		{
@@ -1121,6 +1166,12 @@ namespace PixelEngine
 					hrText = true;
 					textTarget = new Sprite(0, 0);
 					break;
+
+                case Subsystem.GamePad:
+                    contollerRefreshTimer = new Timer(5000f);
+                    gamePad = true;
+                    Controllers = new Controllers(this);
+                    break;
 			}
 		}
 
@@ -1362,6 +1413,11 @@ namespace PixelEngine
 		public virtual void OnKeyRelease(Key k) { }
 		public virtual void OnKeyDown(Key k) { }
 		public virtual void OnDestroy() { }
-		#endregion
-	}
+        public virtual void OnController(int controllerIndex, GamePad gamePad) { }
+        // TODO Implement
+        public virtual void OnControllerConnected(int controllerIndex, GamePad gamePad) { }
+        // TODO Implement
+        public virtual void OnControllerDisconnected(int controllerIndex, GamePad gamePad) { }
+        #endregion
+    }
 }

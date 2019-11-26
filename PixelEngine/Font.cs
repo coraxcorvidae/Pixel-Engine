@@ -11,6 +11,7 @@ namespace PixelEngine
     {
         internal Dictionary<char, Sprite> Glyphs;
         internal int CharHeight;
+        internal static Dictionary<string, Font> UserFonts = new Dictionary<string, Font>();
 
         private Font() => Glyphs = new Dictionary<char, Sprite>();
 
@@ -27,6 +28,8 @@ namespace PixelEngine
             : text.Length == 1
                 ? TextWidth(text[0])
                 : 0;
+
+        public int TextHeight(char c) => Glyphs[c].Height;
 
         public int TextHeight(string text) => (text.Count(c => c == '\n') + 1) * CharHeight;
 
@@ -54,8 +57,8 @@ namespace PixelEngine
                 int y = (cur - 32) / 16;
 
                 for (int i = 0; i < width; i++)
-                for (int j = 0; j < height; j++)
-                    fontChar[i, j] = spr[x * width + i, y * height + j];
+                    for (int j = 0; j < height; j++)
+                        fontChar[i, j] = spr[x * width + i, y * height + j];
 
                 f.Glyphs.Add(cur, fontChar);
             }
@@ -87,8 +90,8 @@ namespace PixelEngine
                     int y = (cur - 32) / 16;
 
                     for (int i = 0; i < w; i++)
-                    for (int j = 0; j < height; j++)
-                        fontChar[i, j] = spr[x * width + i, y * height + j];
+                        for (int j = 0; j < height; j++)
+                            fontChar[i, j] = spr[x * width + i, y * height + j];
 
                     f.Glyphs.Add(cur, fontChar);
                 }
@@ -147,6 +150,29 @@ namespace PixelEngine
             }
 
             return null;
+        }
+
+        #endregion
+
+        #region User Fonts
+
+        public static Font LoadFont(string name, int width, int height, string path)
+        {
+            var font = LoadFont(width, height, path);
+            UserFonts.Add(name, font);
+            return font;
+        }
+
+        public static Font LoadFont(string name, int width, int height, string path, string dataPath)
+        {
+            var font = LoadFont(width, height, path, dataPath);
+            UserFonts.Add(name, font);
+            return font;
+        }
+
+        public static Font UserFont(string name)
+        {
+            return UserFonts[name];
         }
 
         #endregion

@@ -1,4 +1,4 @@
-﻿using SharpDX.XInput;
+﻿using PixelEngine.Extensions.XInput;
 
 namespace PixelEngine
 {
@@ -16,7 +16,7 @@ namespace PixelEngine
             State = new State().Gamepad;
         }
 
-        public GamePad(State state)
+        internal GamePad(State state)
         {
             State = state.Gamepad;
             PacketNumber = state.PacketNumber;

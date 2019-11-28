@@ -1,18 +1,10 @@
 ﻿using System;
-using SharpDX.XInput;
+using PixelEngine.Extensions.XInput;
 
 namespace PixelEngine
 {
-    /// <summary>
-    /// Controller state helper class.
-    /// </summary>
     internal static class ControllerExtensions
     {
-        /// <summary>
-        /// Convert a SharpDX UserInput
-        /// </summary>
-        /// <param name="gamePads"></param>
-        /// <returns></returns>
         internal static UserIndex ToUserIndex(this GamePads gamePads)
         {
             switch (gamePads)

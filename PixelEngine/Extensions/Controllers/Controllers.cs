@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using SharpDX.XInput;
+using PixelEngine.Extensions.XInput;
 
 namespace PixelEngine
 {
@@ -24,7 +24,7 @@ namespace PixelEngine
             IsAvailable = false;
             try
             {
-                var test = new SharpDX.XInput.Controller(UserIndex.One).IsConnected;
+                var test = new Extensions.XInput.Controller(UserIndex.One).IsConnected;
                 IsAvailable = test;
             }
             catch

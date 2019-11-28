@@ -25,6 +25,8 @@
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,19 +37,52 @@
     <WarningLevel>4</WarningLevel>
     <LangVersion>7.3</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Controllers\Controller.cs" />
-    <Compile Include="Controllers\ControllerExtensions.cs" />
-    <Compile Include="Controllers\Controllers.cs" />
-    <Compile Include="Controllers\GamePad.cs" />
-    <Compile Include="Controllers\GamePadButton.cs" />
-    <Compile Include="Controllers\GamePads.cs" />
-    <Compile Include="Controllers\Rumble.cs" />
-    <Compile Include="Extensions\XInput\XInput.cs" />
+    <Compile Include="Extensions\Controllers\Controller.cs" />
+    <Compile Include="Extensions\Controllers\ControllerExtensions.cs" />
+    <Compile Include="Extensions\Controllers\Controllers.cs" />
+    <Compile Include="Extensions\Controllers\GamePad.cs" />
+    <Compile Include="Extensions\Controllers\GamePadButton.cs" />
+    <Compile Include="Extensions\Controllers\GamePads.cs" />
+    <Compile Include="Extensions\Controllers\Rumble.cs" />
+    <Compile Include="Extensions\XInput\AssemblyDoc.cs" />
+    <Compile Include="Extensions\XInput\BatteryDeviceType.cs" />
+    <Compile Include="Extensions\XInput\BatteryInformation.cs" />
+    <Compile Include="Extensions\XInput\BatteryLevel.cs" />
+    <Compile Include="Extensions\XInput\BatteryType.cs" />
+    <Compile Include="Extensions\XInput\Capabilities.cs" />
+    <Compile Include="Extensions\XInput\CapabilityFlags.cs" />
+    <Compile Include="Extensions\XInput\Controller.cs" />
+    <Compile Include="Extensions\XInput\DeviceQueryType.cs" />
+    <Compile Include="Extensions\XInput\DeviceSubType.cs" />
+    <Compile Include="Extensions\XInput\DeviceType.cs" />
+    <Compile Include="Extensions\XInput\ErrorCode.cs" />
+    <Compile Include="Extensions\XInput\ErrorCodeHelper.cs" />
+    <Compile Include="Extensions\XInput\Functions.cs" />
+    <Compile Include="Extensions\XInput\Gamepad.cs" />
+    <Compile Include="Extensions\XInput\GamepadButtonFlags.cs" />
+    <Compile Include="Extensions\XInput\GamepadKeyCode.cs" />
+    <Compile Include="Extensions\XInput\IXInput.cs" />
+    <Compile Include="Extensions\XInput\Keystroke.cs" />
+    <Compile Include="Extensions\XInput\KeyStrokeFlags.cs" />
+    <Compile Include="Extensions\XInput\NamespaceDoc.cs" />
+    <Compile Include="Extensions\XInput\RawBool.cs" />
+    <Compile Include="Extensions\XInput\Result.cs" />
+    <Compile Include="Extensions\XInput\ResultCode.cs" />
+    <Compile Include="Extensions\XInput\ResultDescriptor.cs" />
+    <Compile Include="Extensions\XInput\SharpDXException.cs" />
+    <Compile Include="Extensions\XInput\State.cs" />
+    <Compile Include="Extensions\XInput\UserIndex.cs" />
+    <Compile Include="Extensions\XInput\Vibration.cs" />
+    <Compile Include="Extensions\XInput\XInput13.cs" />
+    <Compile Include="Extensions\XInput\XInput14.cs" />
+    <Compile Include="Extensions\XInput\XInput910.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="Utilities\Animation.cs" />
     <Compile Include="Extensions\Extension.cs" />
@@ -98,11 +133,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Properties\Handwritten.png" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\SharpDX.XInput-StandAlone\SharpDX.XInput-StandAlone\SharpDX.XInput.Standalone.csproj">
-      <Project>{01aa899d-4744-41ff-bf6a-33b3796c9413}</Project>
-      <Name>SharpDX.XInput.Standalone</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

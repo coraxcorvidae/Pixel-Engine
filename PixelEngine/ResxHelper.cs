@@ -21,7 +21,6 @@ namespace PixelEngine
 			LoadFile("Modern.png");
 			LoadFile("Formal.png");
 			LoadFile("Handwritten.png");
-
 			LoadFile("Modern.dat");
 			LoadFile("Formal.dat");
 			LoadFile("Handwritten.dat");
@@ -37,7 +36,7 @@ namespace PixelEngine
 			{
 				try
 				{
-					using (Stream outFile = File.Create(path))
+                    using (Stream outFile = File.Create(path))
 					{
 						const int Size = 4096;
 

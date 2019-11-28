@@ -1414,9 +1414,7 @@ namespace PixelEngine
 		public virtual void OnKeyDown(Key k) { }
 		public virtual void OnDestroy() { }
         public virtual void OnController(int controllerIndex, GamePad gamePad) { }
-        // TODO Implement
         public virtual void OnControllerConnected(int controllerIndex, GamePad gamePad) { }
-        // TODO Implement
         public virtual void OnControllerDisconnected(int controllerIndex, GamePad gamePad) { }
         #endregion
     }

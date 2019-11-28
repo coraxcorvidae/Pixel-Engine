@@ -1,11 +1,11 @@
 ﻿
-using SharpDX.XInput;
+using PixelEngine.Extensions.XInput;
 
 namespace PixelEngine
 {
     public class Controller
     {
-        private readonly SharpDX.XInput.Controller controller;
+        private readonly Extensions.XInput.Controller controller;
 
         public GamePad State;
         public GamePads GamePads { get; private set; }
@@ -40,7 +40,7 @@ namespace PixelEngine
             {
                 try
                 {
-                    var c = new SharpDX.XInput.Controller(gamePads.ToUserIndex());
+                    var c = new Extensions.XInput.Controller(gamePads.ToUserIndex());
                     var tmp = c.IsConnected;
                     if (c.IsConnected)
                     {
@@ -48,7 +48,7 @@ namespace PixelEngine
                         GamePads = gamePads;
                         UserIndex = gamePads.ToUserIndex();
                         IsAvailable = true;
-                        SharpDX.XInput.Controller.SetReporting(true);
+                        Extensions.XInput.Controller.SetReporting(true);
                         State = GetState();
                     }
                 }
@@ -66,70 +66,70 @@ namespace PixelEngine
             State = new GamePad();
         }
 
-        public BatteryInformation GetBatteryInformation(BatteryDeviceType batteryDeviceType)
-        {
-            if (!IsAvailable) return new BatteryInformation();
-            try
-            {
-                return controller.GetBatteryInformation(batteryDeviceType);
-            }
-            catch
-            {
-                // No-Op
-            }
+        //public BatteryInformation GetBatteryInformation(BatteryDeviceType batteryDeviceType)
+        //{
+        //    if (!IsAvailable) return new BatteryInformation();
+        //    try
+        //    {
+        //        return controller.GetBatteryInformation(batteryDeviceType);
+        //    }
+        //    catch
+        //    {
+        //        // No-Op
+        //    }
 
-            return new BatteryInformation();
-        }
+        //    return new BatteryInformation();
+        //}
 
-        public Capabilities GetCapabilities(DeviceQueryType deviceQueryType)
-        {
-            if (!IsAvailable) return new Capabilities();
-            try
-            {
-                return controller.GetCapabilities(deviceQueryType);
-            }
-            catch
-            {
-                // No-Op
-            }
+        //public Capabilities GetCapabilities(DeviceQueryType deviceQueryType)
+        //{
+        //    if (!IsAvailable) return new Capabilities();
+        //    try
+        //    {
+        //        return controller.GetCapabilities(deviceQueryType);
+        //    }
+        //    catch
+        //    {
+        //        // No-Op
+        //    }
 
-            return new Capabilities();
-        }
+        //    return new Capabilities();
+        //}
 
-        public bool GetCapabilities(DeviceQueryType deviceQueryType, out Capabilities capabilities)
-        {
-            if (IsAvailable)
-                try
-                {
-                    capabilities = controller.GetCapabilities(deviceQueryType);
-                    return true;
-                }
-                catch
-                {
-                    // No-Op
-                }
+        //public bool GetCapabilities(DeviceQueryType deviceQueryType, out Capabilities capabilities)
+        //{
+        //    if (IsAvailable)
+        //        try
+        //        {
+        //            capabilities = controller.GetCapabilities(deviceQueryType);
+        //            return true;
+        //        }
+        //        catch
+        //        {
+        //            // No-Op
+        //        }
 
-            capabilities = new Capabilities();
-            return false;
-        }
+        //    capabilities = new Capabilities();
+        //    return false;
+        //}
 
-        public bool GetKeystroke(DeviceQueryType deviceQueryType, out Keystroke keystroke)
-        {
-            if (IsAvailable)
-                try
-                {
-                    var result = controller.GetKeystroke(deviceQueryType, out keystroke);
-                    if (result.Success)
-                        return true;
-                }
-                catch
-                {
-                    // No-Op
-                }
+        //public bool GetKeystroke(DeviceQueryType deviceQueryType, out Keystroke keystroke)
+        //{
+        //    if (IsAvailable)
+        //        try
+        //        {
+        //            var result = controller.GetKeystroke(deviceQueryType, out keystroke);
+        //            if (result.Success)
+        //                return true;
+        //        }
+        //        catch
+        //        {
+        //            // No-Op
+        //        }
 
-            keystroke = new Keystroke();
-            return false;
-        }
+        //    keystroke = new Keystroke();
+        //    return false;
+        //}
 
         public GamePad GetState()
         {

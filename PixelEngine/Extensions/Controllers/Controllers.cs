@@ -32,8 +32,6 @@ namespace PixelEngine
                 // No-Op
             }
 
-            if (!IsAvailable) return;
-
             GamePads = new List<Controller>();
             for (var i = 0; i < 4; i++)
             {
